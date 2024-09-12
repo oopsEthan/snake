@@ -9,3 +9,8 @@ v 0.02 -
 - Snake background and colors swapped for eyeball's sakes
 - Difficulty implemented
 - Score implemented
+
+v 1 (lol) -
+- Game now properly restarts
+- Snake detects collision with body
+- Uhhh...
