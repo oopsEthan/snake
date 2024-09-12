@@ -1,36 +1,29 @@
 from turtle import *
 import random as r
 
-def generate_snake():
-    generated_snake = []
-    snake_pieces = 3
-    x = 0
-    while snake_pieces > 0:
-        snake_piece = Turtle()
-        snake_piece.speed(0)
-        snake_piece.pu()
-        snake_piece.shape("square")
-        generated_snake.append(snake_piece)
-        snake_piece.setx(x)
-        snake_pieces -= 1
-        x -= 20
-    return generated_snake
-
-def movement(snake):
-    prev_pos = snake[0].pos()
-    snake[0].fd(20)
-    for p in range(1, len(snake)):
-        new_pos = prev_pos
-        prev_pos = snake[p].pos()
-        snake[p].goto(new_pos)
-
 def grow_snake(snake):
     snake_piece = Turtle()
     snake_piece.speed(0)
     snake_piece.pu()
     snake_piece.shape("square")
     snake.append(snake_piece)
-    movement(snake)
+    update_snake(snake)
+
+def generate_snake():
+    generated_snake = []
+    snake_pieces = 3
+    while snake_pieces > 0:
+        grow_snake(generated_snake)
+        snake_pieces -= 1
+    return generated_snake
+
+# Function for updating snakes body size
+def update_snake(snake):
+    prev_pos = snake[0].pos()
+    for p in range(1, len(snake)):
+        new_pos = prev_pos
+        prev_pos = snake[p].pos()
+        snake[p].goto(new_pos)
 
 def check_collision(snake, food) -> bool:
     if (snake[0].xcor() > 400 or snake[0].xcor() < -400 or 
@@ -55,7 +48,7 @@ def generate_food() -> Turtle:
     food.pu()
     food.color("red")
     food.shape("circle")
-    food.setx(r.randrange(-380, 401, 20))
-    food.sety(r.randrange(-280, 281, 20))
+    food.setx(r.randrange(-380, 380, 20))
+    food.sety(r.randrange(-280, 280, 20))
     print(food.pos())
     return food
