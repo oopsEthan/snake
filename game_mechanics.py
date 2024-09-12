@@ -17,7 +17,13 @@ class SnakeGame():
         self.screen.setup(self.SCREEN_X, self.SCREEN_Y)
         self.screen.title("Shnake")
         self.screen.tracer(0)
-        
+        self.screen.bgcolor("black")
+        self.difficulty = self.screen.textinput("Difficulty", "Choose your difficulty:\n-> Easy\n-> Normal\n-> Hard\n-> Impossible").lower()
+        self.difficulty_set = self.assign_difficulty(self.difficulty)
+        while not self.difficulty_set:
+            self.difficulty = self.screen.textinput("Invalid Choice!", "Choose your difficulty:\n-> Easy\n-> Normal\n-> Hard\n-> Impossible").lower()
+            self.difficulty_set = self.assign_difficulty(self.difficulty)
+
         # Initialize snake
         self.snake = generate_snake()
         self.screen.update()
@@ -46,7 +52,20 @@ class SnakeGame():
             update_snake(self.snake)
             self.generated_food = check_collision(self.snake, self.food)
             self.screen.update()
-            self.screen.ontimer(self.game_loop, 100)  # Continue the loop
+            self.screen.ontimer(self.game_loop, self.game_speed)  # Continue the loop
+
+    def assign_difficulty(self, diff) -> bool:
+        if diff == "easy":
+            self.game_speed = 150
+        elif diff == "normal":
+            self.game_speed = 100
+        elif diff == "hard":
+            self.game_speed = 50
+        elif diff == "impossible":
+            self.game_speed = 25
+        else:
+            return False
+        return True
 
     def run(self):
         self.screen.exitonclick()  # Keeps the window open until clicked

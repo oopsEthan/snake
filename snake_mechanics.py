@@ -3,6 +3,7 @@ import random as r
 
 def grow_snake(snake):
     snake_piece = Turtle()
+    snake_piece.color("white")
     snake_piece.speed(0)
     snake_piece.pu()
     snake_piece.shape("square")
@@ -12,7 +13,7 @@ def grow_snake(snake):
 def generate_snake():
     generated_snake = []
     snake_pieces = 3
-    while snake_pieces > 0:
+    while snake_pieces >= 0:
         grow_snake(generated_snake)
         snake_pieces -= 1
     return generated_snake
