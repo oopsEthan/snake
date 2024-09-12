@@ -7,6 +7,8 @@ def grow_snake(snake):
     snake_piece.speed(0)
     snake_piece.pu()
     snake_piece.shape("square")
+    if len(snake) != 0:
+        snake_piece.setpos(snake[-1].pos())
     snake.append(snake_piece)
     update_snake(snake)
 
@@ -53,3 +55,15 @@ def generate_food() -> Turtle:
     food.sety(r.randrange(-280, 280, 20))
     print(food.pos())
     return food
+
+def init_score_turtle(tur, score):
+    tur.hideturtle()
+    tur.color("white")
+    tur.pu()
+    tur.goto(-380, -280)
+    tur.pd()
+    tur.write(f"Score: {score}", align="left", font=("Courier", 24, "normal"))
+
+def update_score(tur, score):
+    tur.clear()
+    tur.write(f"Score: {score}", align="left", font=("Courier", 24, "normal"))

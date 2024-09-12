@@ -11,6 +11,7 @@ class SnakeGame():
         self.dead = False
         self.food = None
         self.generated_food = False
+        self.score = 0
 
         # Set up screen
         self.screen = Screen()
@@ -18,6 +19,8 @@ class SnakeGame():
         self.screen.title("Shnake")
         self.screen.tracer(0)
         self.screen.bgcolor("black")
+
+        # Set difficulty
         self.difficulty = self.screen.textinput("Difficulty", "Choose your difficulty:\n-> Easy\n-> Normal\n-> Hard\n-> Impossible").lower()
         self.difficulty_set = self.assign_difficulty(self.difficulty)
         while not self.difficulty_set:
@@ -27,6 +30,10 @@ class SnakeGame():
         # Initialize snake
         self.snake = generate_snake()
         self.screen.update()
+
+        # Set up score turtle
+        self.score_turtle = Turtle()
+        init_score_turtle(self.score_turtle, self.score)
 
         # Set up controls
         self.screen.listen()
@@ -51,6 +58,9 @@ class SnakeGame():
             self.snake[0].fd(self.MOVEMENT_SPEED)
             update_snake(self.snake)
             self.generated_food = check_collision(self.snake, self.food)
+            if not self.generated_food:
+                self.score += 1
+                update_score(self.score_turtle, self.score)
             self.screen.update()
             self.screen.ontimer(self.game_loop, self.game_speed)  # Continue the loop
 
