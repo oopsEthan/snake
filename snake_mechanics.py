@@ -28,11 +28,7 @@ def update_snake(snake):
         prev_pos = snake[p].pos()
         snake[p].goto(new_pos)
 
-def check_collision(snake, food) -> bool:
-    if (snake[0].xcor() > 400 or snake[0].xcor() < -400 or 
-        snake[0].ycor() > 300 or snake[0].ycor() < -300):
-        bye() # Needs to die here or something, restart
-
+def check_collision_with_food(snake, food) -> bool:
     head_pos = snake[0].pos()
     food_pos = food.pos()
 
@@ -46,6 +42,22 @@ def check_collision(snake, food) -> bool:
     
     return True
 
+def check_collision_for_death(snake):
+    if (snake[0].xcor() > 400 or snake[0].xcor() < -400 or 
+        snake[0].ycor() > 300 or snake[0].ycor() < -300):
+        return True
+
+    for p in range(1, len(snake)):
+        head_pos = snake[0].pos()
+        body_pos = snake[p].pos()
+        
+        distance = ((head_pos[0] - body_pos[0]) ** 2 + (head_pos[1] - body_pos[1]) ** 2) ** 0.5
+        
+        if distance < 5:
+            return True
+    
+    return False
+
 def generate_food() -> Turtle:
     food = Turtle()
     food.pu()
@@ -57,6 +69,7 @@ def generate_food() -> Turtle:
     return food
 
 def init_score_turtle(tur, score):
+    tur.clear()
     tur.hideturtle()
     tur.color("white")
     tur.pu()
@@ -67,3 +80,12 @@ def init_score_turtle(tur, score):
 def update_score(tur, score):
     tur.clear()
     tur.write(f"Score: {score}", align="left", font=("Courier", 24, "normal"))
+
+def game_over(tur, score):
+    tur.clear()
+    tur.goto(0, 60)
+    tur.write(f"Game Over", True, align="center", font=("Courier", 24, "normal"))
+    tur.goto(0, 20)
+    tur.write(f"Final score: {score}", True, align="center", font=("Courier", 24, "normal"))
+    tur.goto(0, -100)
+    tur.write(f"Click to play again", True, align="center", font=("Courier", 24, "normal"))
