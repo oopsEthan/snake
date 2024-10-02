@@ -1,62 +1,76 @@
 from turtle import *
 import random as r
 
-def grow_snake(snake):
-    snake_piece = Turtle()
-    snake_piece.color("white")
-    snake_piece.speed(0)
-    snake_piece.pu()
-    snake_piece.shape("square")
-    if len(snake) != 0:
-        snake_piece.setpos(snake[-1].pos())
-    snake.append(snake_piece)
-    update_snake(snake)
+MOVEMENT_SPEED = 20
 
-def generate_snake():
-    generated_snake = []
-    snake_pieces = 3
-    while snake_pieces >= 0:
-        grow_snake(generated_snake)
-        snake_pieces -= 1
-    return generated_snake
+class Snake():
+    def __init__(self) -> None:
+        self.snake_body = []
+        self.grow(3)
 
-# Function for updating snakes body size
-def update_snake(snake):
-    prev_pos = snake[0].pos()
-    for p in range(1, len(snake)):
-        new_pos = prev_pos
-        prev_pos = snake[p].pos()
-        snake[p].goto(new_pos)
+    def grow(self, amount) -> None:
+        pieces_grown = 0
+        while pieces_grown < amount:
+            snake_piece = Turtle()
+            snake_piece.color("white")
+            snake_piece.speed(0)
+            snake_piece.pu()
+            snake_piece.shape("square")
+        
+            if len(self.snake_body) != 0:
+                snake_piece.setpos(self.snake_body[-1].pos())
+            self.snake_body.append(snake_piece)
 
-def check_collision_with_food(snake, food) -> bool:
-    head_pos = snake[0].pos()
-    food_pos = food.pos()
+            pieces_grown += 1
+        self.update_snake()
 
-    distance = ((head_pos[0] - food_pos[0]) ** 2 + (head_pos[1] - food_pos[1]) ** 2) ** 0.5
+    # Function for updating snakes body size
+    def update_snake(self):
+        prev_pos = self.snake_body[0].pos()
+        for p in range(1, len(self.snake_body)):
+            new_pos = prev_pos
+            prev_pos = self.snake_body[p].pos()
+            self.snake_body[p].goto(new_pos)
 
-    if distance <= 10:
-        food.hideturtle()
-        food.goto(1000, 1000)
-        grow_snake(snake)
-        return False
-    
-    return True
+    def check_collision_with_food(self, food) -> bool:
+        head_pos = self.snake_body[0].pos()
+        food_pos = food.pos()
 
-def check_collision_for_death(snake):
-    if (snake[0].xcor() > 400 or snake[0].xcor() < -400 or 
-        snake[0].ycor() > 300 or snake[0].ycor() < -300):
+        distance = ((head_pos[0] - food_pos[0]) ** 2 + (head_pos[1] - food_pos[1]) ** 2) ** 0.5
+
+        if distance <= 10:
+            food.hideturtle()
+            food.goto(1000, 1000)
+            self.grow(1)
+            return False
+        
         return True
 
-    for p in range(1, len(snake)):
-        head_pos = snake[0].pos()
-        body_pos = snake[p].pos()
-        
-        distance = ((head_pos[0] - body_pos[0]) ** 2 + (head_pos[1] - body_pos[1]) ** 2) ** 0.5
-        
-        if distance < 5:
+    def check_collision_for_death(self):
+        if (self.snake_body[0].xcor() > 400 or self.snake_body[0].xcor() < -400 or 
+            self.snake_body[0].ycor() > 300 or self.snake_body[0].ycor() < -300):
             return True
-    
-    return False
+
+        for p in range(1, len(self.snake_body)):
+            head_pos = self.snake_body[0].pos()
+            body_pos = self.snake_body[p].pos()
+            
+            distance = ((head_pos[0] - body_pos[0]) ** 2 + (head_pos[1] - body_pos[1]) ** 2) ** 0.5
+            
+            if distance < 5:
+                return True
+        
+        return False
+
+    def move_forward(self):
+        self.snake_body[0].fd(MOVEMENT_SPEED)
+        self.update_snake()
+
+    def turn_left(self):
+        self.snake_body[0].lt(90)
+
+    def turn_right(self):
+        self.snake_body[0].rt(90)
 
 def generate_food() -> Turtle:
     food = Turtle()
