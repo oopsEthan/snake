@@ -27,7 +27,7 @@ class SnakeGame():
             self.generated_food = True
 
         if not self.dead:
-            self.snake_obj.move_forward()
+            self.snake_obj.update_snake_and_move_forward()
             self.dead = self.snake_obj.check_collision_for_death()
             self.generated_food = self.snake_obj.check_collision_with_food(self.food)
             if not self.generated_food:
@@ -41,13 +41,6 @@ class SnakeGame():
             self.screen.onclick(lambda x, y: self.set_up_game())
 
     def set_up_game(self):
-        # Initialize snake
-        if self.snake_obj:
-            for snake_piece in self.snake_obj.snake_body:
-                snake_piece.hideturtle()
-                del snake_piece
-            self.snake_obj.snake_body.clear()
-        self.snake_obj.grow(3)
         self.screen.update()
         
         # Initialize uncategorized variables
@@ -76,6 +69,7 @@ class SnakeGame():
         self.screen.listen()
         self.screen.onkey(self.snake_obj.turn_left, "a")
         self.screen.onkey(self.snake_obj.turn_right, "d")
+        self.screen.onkey(self.snake_obj.debug_print, "g")
         
         # Start the game loop
         self.game_loop()

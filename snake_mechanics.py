@@ -4,11 +4,23 @@ import random as r
 MOVEMENT_SPEED = 20
 
 class Snake():
+    # Initialize the snake with a default size of 3 segments
     def __init__(self) -> None:
         self.snake_body = []
+        self.snake_body.append(None)
+        self.grow_head()
         self.grow(3)
 
-    def grow(self, amount) -> None:
+    def grow_head(self):
+        snake_piece = Turtle()
+        snake_piece.color("white")
+        snake_piece.speed(0)
+        snake_piece.pu()
+        snake_piece.shape("square")
+        self.snake_body[0] = snake_piece
+
+    # Grow the snake by adding 'amount' of new segments
+    def grow(self, amount: int) -> None:
         pieces_grown = 0
         while pieces_grown < amount:
             snake_piece = Turtle()
@@ -16,23 +28,26 @@ class Snake():
             snake_piece.speed(0)
             snake_piece.pu()
             snake_piece.shape("square")
-        
-            if len(self.snake_body) != 0:
-                snake_piece.setpos(self.snake_body[-1].pos())
             self.snake_body.append(snake_piece)
-
             pieces_grown += 1
-        self.update_snake()
 
-    # Function for updating snakes body size
-    def update_snake(self):
+    # Move the snake forward and update the positions of the body segments
+    def update_snake_and_move_forward(self) -> None:
+        if len(self.snake_body) <= 1:
+            return
+
+        print(f"Attempting to move snake, body length: {len(self.snake_body)}")
         prev_pos = self.snake_body[0].pos()
+        print(f"Moving head from {prev_pos}")
+        self.snake_body[0].fd(MOVEMENT_SPEED)
+
         for p in range(1, len(self.snake_body)):
             new_pos = prev_pos
             prev_pos = self.snake_body[p].pos()
             self.snake_body[p].goto(new_pos)
 
-    def check_collision_with_food(self, food) -> bool:
+    # Check if the snake's head has collided with the food
+    def check_collision_with_food(self, food: Turtle) -> bool:
         head_pos = self.snake_body[0].pos()
         food_pos = food.pos()
 
@@ -46,7 +61,8 @@ class Snake():
         
         return True
 
-    def check_collision_for_death(self):
+    # Check if the snake's head has collided with the boundaries or its body
+    def check_collision_for_death(self) -> bool:
         if (self.snake_body[0].xcor() > 400 or self.snake_body[0].xcor() < -400 or 
             self.snake_body[0].ycor() > 300 or self.snake_body[0].ycor() < -300):
             return True
@@ -62,16 +78,19 @@ class Snake():
         
         return False
 
-    def move_forward(self):
-        self.snake_body[0].fd(MOVEMENT_SPEED)
-        self.update_snake()
-
-    def turn_left(self):
+    # Turn the snake left by 90 degrees
+    def turn_left(self) -> None:
         self.snake_body[0].lt(90)
 
-    def turn_right(self):
+    # Turn the snake right by 90 degrees
+    def turn_right(self) -> None:
         self.snake_body[0].rt(90)
 
+    # Print debug information when needed, called by pressing "g"
+    def debug_print(self) -> None:
+        pass
+
+# Generate a food item at a random position
 def generate_food() -> Turtle:
     food = Turtle()
     food.pu()
@@ -82,7 +101,8 @@ def generate_food() -> Turtle:
     print(food.pos())
     return food
 
-def init_score_turtle(tur, score):
+# Initialize the score display turtle
+def init_score_turtle(tur: Turtle, score: int) -> None:
     tur.clear()
     tur.hideturtle()
     tur.color("white")
@@ -91,11 +111,13 @@ def init_score_turtle(tur, score):
     tur.pd()
     tur.write(f"Score: {score}", align="left", font=("Courier", 24, "normal"))
 
-def update_score(tur, score):
+# Update the score on the screen
+def update_score(tur: Turtle, score: int) -> None:
     tur.clear()
     tur.write(f"Score: {score}", align="left", font=("Courier", 24, "normal"))
 
-def game_over(tur, score):
+# Display the game over screen
+def game_over(tur: Turtle, score: int) -> None:
     tur.clear()
     tur.goto(0, 60)
     tur.write(f"Game Over", True, align="center", font=("Courier", 24, "normal"))
