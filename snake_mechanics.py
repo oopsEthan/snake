@@ -7,17 +7,9 @@ class Snake():
     # Initialize the snake with a default size of 3 segments
     def __init__(self) -> None:
         self.snake_body = []
-        self.snake_body.append(None)
-        self.grow_head()
+        #self.snake_body.append(None)
+        #self.grow_head()
         self.grow(3)
-
-    def grow_head(self):
-        snake_piece = Turtle()
-        snake_piece.color("white")
-        snake_piece.speed(0)
-        snake_piece.pu()
-        snake_piece.shape("square")
-        self.snake_body[0] = snake_piece
 
     # Grow the snake by adding 'amount' of new segments
     def grow(self, amount: int) -> None:
@@ -36,9 +28,7 @@ class Snake():
         if len(self.snake_body) <= 1:
             return
 
-        print(f"Attempting to move snake, body length: {len(self.snake_body)}")
         prev_pos = self.snake_body[0].pos()
-        print(f"Moving head from {prev_pos}")
         self.snake_body[0].fd(MOVEMENT_SPEED)
 
         for p in range(1, len(self.snake_body)):
