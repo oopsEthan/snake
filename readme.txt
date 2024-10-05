@@ -1,15 +1,5 @@
-Snake game, currently -> WIP, so going to have fun writing mock patch notes instead:
+Snake game made in Python's turtle for 100 Days of Code
 
-v 0.01 -
-- Snake can move and eat apple
-- Snake will grow
-
-v 0.02 -
-- (bug) Snake will grow correctly
-- Snake background and colors swapped for eyeball's sakes
-- Difficulty implemented
-- Score implemented
-
-v 1 (lol) -
-- Game now properly restarts
-- Snake detects collision with body
+TODO:
+- Create high score tracking
+    - Use JSON/files, learn 'with'
