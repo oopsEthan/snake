@@ -36,7 +36,7 @@ class UI(Turtle):
         self.teleport(0, -100)
         self.write(f"Click to play again", True, align="center", font=("Courier", 24, "normal"))
 
-        self.screen.onclick(lambda x, y: func)
+        self.screen.onclick(lambda x, y: func())
         self.screen.update()
 
     def initialize_screen(self) -> None:

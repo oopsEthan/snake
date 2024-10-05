@@ -33,16 +33,22 @@ class SnakeGame():
 
 
     def reset_game(self):
+        print("Game reset initializing...")
+
         # Initialize uncategorized variables
         self.collisions_detected = {"food": False, "self": False}
+        print("Collisions reset.")
 
         # Initialize score
         self.ui.reset_score()
+        print("Score reset.")
 
         # Set up controls
         self.ui.begin_listening(self.snake_obj)
+        print("Listening begin.")
         
         # Start the game loop
+        print("Game reset completed.")
         self.game_loop()
 
     def run(self):
