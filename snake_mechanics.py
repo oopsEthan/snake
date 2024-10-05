@@ -9,7 +9,6 @@ class Snake():
     # Initialize the snake with a default size of 3 segments
     def __init__(self) -> None:
         self.snake_body = []
-        self.grow(3)
 
     # Grow the snake by adding 'amount' of new segments
     def grow(self, amount: int) -> None:
@@ -66,6 +65,13 @@ class Snake():
                 return True
         
         return False
+
+    def reset_snake(self) -> None:
+        for snake_piece in self.snake_body:
+            snake_piece.hideturtle()
+        self.snake_body.clear()
+        
+        self.grow(3)
 
     # Turn the snake left by 90 degrees
     def turn_left(self) -> None:
