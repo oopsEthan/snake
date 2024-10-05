@@ -2,27 +2,29 @@ from turtle import *
 from snake_mechanics import *
 from ui import UI
 
-class SnakeGame():
+# Class that manages the Snake game, including the snake, food, UI, and game state
+class SnakeGame:
+    # Initializes the snake, food, and UI, and resets the game
     def __init__(self) -> None:
-        # Initial variables
-        self.MOVEMENT_SPEED = 20
-        self.snake_obj = Snake()
-
-        self.food = Food()
-        self.ui = UI()
+        self.snake_obj: Snake = Snake()
+        self.food: Food = Food()
+        self.ui: UI = UI()
 
         self.reset_game()
 
-    def game_loop(self):
+    # The main game loop: moves the snake, checks for collisions, and handles game progression
+    def game_loop(self) -> None:
         if not self.collisions_detected["self"]:
             self.snake_obj.update_snake_and_move_forward()
 
             self.collisions_detected["food"] = self.snake_obj.check_collision_with_food(self.food)
             self.collisions_detected["self"] = self.snake_obj.check_collision_with_self()
+
             self.resolve_collisions()
 
             self.ui.loop(self.game_loop)
     
+    # Resolves collisions, such as eating food or hitting a wall or itself
     def resolve_collisions(self) -> None:
         if self.collisions_detected["food"]:
             self.ui.update_score(1)
@@ -31,15 +33,16 @@ class SnakeGame():
         elif self.collisions_detected["self"]:
             self.ui.game_over(self.reset_game)
 
-
-    def reset_game(self, x: int = None, y: int = None):
+    # Resets the game by resetting the snake, collisions, score, and input listening
+    def reset_game(self, x: int = None, y: int = None) -> None:
         self.snake_obj.reset_snake()
-        self.collisions_detected = {"food": False, "self": False}
+        self.collisions_detected: dict[str, bool] = {"food": False, "self": False}
 
         self.ui.reset_score()
         self.ui.begin_listening(self.snake_obj)
         
         self.game_loop()
 
-    def run(self):
+    # Starts the main game loop by activating the UI screen's mainloop
+    def run(self) -> None:
         self.ui.screen.mainloop()

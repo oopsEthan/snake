@@ -1,14 +1,16 @@
 from turtle import *
 import random as r
 
-MOVEMENT_SPEED = 20
+# Constants for snake movement speed and food spawn range
+SNAKE_MOVEMENT_SPEED = 20
 FOOD_SPAWN_X_RANGE = 380
 FOOD_SPAWN_Y_RANGE = 280
 
-class Snake():
-    # Initialize the snake with a default size of 3 segments
+# Class representing the snake in the game
+class Snake:
+    # Initialize the snake with an empty list for its body segments
     def __init__(self) -> None:
-        self.snake_body = []
+        self.snake_body: list[Turtle] = []
 
     # Grow the snake by adding 'amount' of new segments
     def grow(self, amount: int) -> None:
@@ -28,7 +30,7 @@ class Snake():
             return
 
         prev_pos = self.snake_body[0].pos()
-        self.snake_body[0].fd(MOVEMENT_SPEED)
+        self.snake_body[0].fd(SNAKE_MOVEMENT_SPEED)
 
         for p in range(1, len(self.snake_body)):
             new_pos = prev_pos
@@ -36,12 +38,14 @@ class Snake():
             self.snake_body[p].goto(new_pos)
 
     # Check if the snake's head has collided with the food
-    def check_collision_with_food(self, food) -> bool:
+    def check_collision_with_food(self, food: 'Food') -> bool:
         head_pos = self.snake_body[0].pos()
         food_pos = food.pos()
 
+        # Calculate the distance between the snake's head and the food
         distance = ((head_pos[0] - food_pos[0]) ** 2 + (head_pos[1] - food_pos[1]) ** 2) ** 0.5
 
+        # If within a certain range, consider it a collision
         if distance <= 10:
             food.refresh_location()
             self.grow(1)
@@ -51,10 +55,12 @@ class Snake():
 
     # Check if the snake's head has collided with the boundaries or its body
     def check_collision_with_self(self) -> bool:
+        # Check for boundary collision
         if (self.snake_body[0].xcor() > 400 or self.snake_body[0].xcor() < -400 or 
             self.snake_body[0].ycor() > 300 or self.snake_body[0].ycor() < -300):
             return True
 
+        # Check for collision with the snake's own body
         for p in range(1, len(self.snake_body)):
             head_pos = self.snake_body[0].pos()
             body_pos = self.snake_body[p].pos()
@@ -66,11 +72,14 @@ class Snake():
         
         return False
 
+    # Reset the snake's position and size
     def reset_snake(self) -> None:
+        # Hide all segments and clear the snake body
         for snake_piece in self.snake_body:
             snake_piece.hideturtle()
         self.snake_body.clear()
         
+        # Regrow the snake with 3 segments
         self.grow(3)
 
     # Turn the snake left by 90 degrees
@@ -85,7 +94,9 @@ class Snake():
     def debug_print(self) -> None:
         pass
 
+# Class representing the food in the game
 class Food(Turtle):
+    # Initialize the food and place it at a random location
     def __init__(self) -> None:
         super().__init__()
         self.pen(pendown=False)
@@ -93,6 +104,7 @@ class Food(Turtle):
         self.shape("circle")
         self.refresh_location()
     
+    # Move the food to a new random location
     def refresh_location(self) -> None:
         spawn_x = r.randrange(-FOOD_SPAWN_X_RANGE, FOOD_SPAWN_X_RANGE, 20)
         spawn_y = r.randrange(-FOOD_SPAWN_Y_RANGE, FOOD_SPAWN_Y_RANGE, 20)
