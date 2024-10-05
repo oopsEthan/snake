@@ -1,5 +1,6 @@
 from turtle import *
 from snake_mechanics import *
+from ui import UI
 
 class SnakeGame():
     def __init__(self) -> None:
@@ -9,61 +10,46 @@ class SnakeGame():
         self.MOVEMENT_SPEED = 20
         self.snake_obj = Snake()
 
-        self.food = None
-        self.score_turtle = None
+        self.food = Food()
+        self.ui = UI()
 
-        # Set up screen
+        # Set up screen - may move into UI?
         self.screen = Screen()
         self.screen.setup(self.SCREEN_X, self.SCREEN_Y)
         self.screen.title("Shnake")
         self.screen.tracer(0)
         self.screen.bgcolor("black")
 
-        self.set_up_game()
+        self.reset_game()
 
     def game_loop(self):
-        if not self.generated_food:
-            self.food = generate_food()
-            self.generated_food = True
-
-        if not self.dead:
+        if not self.collisions_detected["self"]:
             self.snake_obj.update_snake_and_move_forward()
-            self.dead = self.snake_obj.check_collision_for_death()
-            self.generated_food = self.snake_obj.check_collision_with_food(self.food)
-            if not self.generated_food:
-                self.score += 1
-                update_score(self.score_turtle, self.score)
-            self.screen.update()
-            self.screen.ontimer(self.game_loop, self.game_speed)  # Continue the loop
-        
-        else:
-            game_over(self.score_turtle, self.score)
-            self.screen.onclick(lambda x, y: self.set_up_game())
 
-    def set_up_game(self):
+            self.collisions_detected["food"] = self.snake_obj.check_collision_with_food(self.food)
+            self.collisions_detected["self"] = self.snake_obj.check_collision_with_self()
+            self.resolve_collisions()
+
+            self.screen.update()
+            self.screen.ontimer(self.game_loop, 100)
+    
+    def resolve_collisions(self) -> None:
+        if self.collisions_detected["food"]:
+            self.ui.update_score(1)
+            self.collisions_detected["food"] = False
+        
+        elif self.collisions_detected["self"]:
+            self.ui.game_over()
+            self.screen.onclick(lambda x, y: self.reset_game())
+
+    def reset_game(self):
         self.screen.update()
         
         # Initialize uncategorized variables
-        self.dead = False
-        self.score = 0
-
-        # Initialize food
-        self.generated_food = False
-        if self.food != None:
-            self.food.hideturtle()
-            self.food.goto(1000, 1000)
+        self.collisions_detected = {"food": False, "self": False}
 
         # Initialize score
-        if self.score_turtle == None:
-            self.score_turtle = Turtle()
-        init_score_turtle(self.score_turtle, self.score)
-
-        # Determine difficulty
-        self.difficulty = self.screen.textinput("Difficulty", "Choose your difficulty:\n-> Easy\n-> Normal\n-> Hard\n-> Impossible").lower()
-        self.difficulty_set = self.assign_difficulty(self.difficulty)
-        while not self.difficulty_set:
-            self.difficulty = self.screen.textinput("Invalid Choice!", "Choose your difficulty:\n-> Easy\n-> Normal\n-> Hard\n-> Impossible").lower()
-            self.difficulty_set = self.assign_difficulty(self.difficulty)
+        self.ui.reset_score()
 
         # Set up controls
         self.screen.listen()
@@ -73,19 +59,6 @@ class SnakeGame():
         
         # Start the game loop
         self.game_loop()
-
-    def assign_difficulty(self, diff) -> bool:
-        if diff == "easy":
-            self.game_speed = 150
-        elif diff == "normal":
-            self.game_speed = 100
-        elif diff == "hard":
-            self.game_speed = 50
-        elif diff == "impossible":
-            self.game_speed = 25
-        else:
-            return False
-        return True
 
     def run(self):
         self.screen.mainloop()

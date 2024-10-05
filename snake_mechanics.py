@@ -2,13 +2,13 @@ from turtle import *
 import random as r
 
 MOVEMENT_SPEED = 20
+FOOD_SPAWN_X_RANGE = 380
+FOOD_SPAWN_Y_RANGE = 280
 
 class Snake():
     # Initialize the snake with a default size of 3 segments
     def __init__(self) -> None:
         self.snake_body = []
-        #self.snake_body.append(None)
-        #self.grow_head()
         self.grow(3)
 
     # Grow the snake by adding 'amount' of new segments
@@ -37,22 +37,21 @@ class Snake():
             self.snake_body[p].goto(new_pos)
 
     # Check if the snake's head has collided with the food
-    def check_collision_with_food(self, food: Turtle) -> bool:
+    def check_collision_with_food(self, food) -> bool:
         head_pos = self.snake_body[0].pos()
         food_pos = food.pos()
 
         distance = ((head_pos[0] - food_pos[0]) ** 2 + (head_pos[1] - food_pos[1]) ** 2) ** 0.5
 
         if distance <= 10:
-            food.hideturtle()
-            food.goto(1000, 1000)
+            food.refresh_location()
             self.grow(1)
-            return False
+            return True
         
-        return True
+        return False
 
     # Check if the snake's head has collided with the boundaries or its body
-    def check_collision_for_death(self) -> bool:
+    def check_collision_with_self(self) -> bool:
         if (self.snake_body[0].xcor() > 400 or self.snake_body[0].xcor() < -400 or 
             self.snake_body[0].ycor() > 300 or self.snake_body[0].ycor() < -300):
             return True
@@ -80,38 +79,15 @@ class Snake():
     def debug_print(self) -> None:
         pass
 
-# Generate a food item at a random position
-def generate_food() -> Turtle:
-    food = Turtle()
-    food.pu()
-    food.color("red")
-    food.shape("circle")
-    food.setx(r.randrange(-380, 380, 20))
-    food.sety(r.randrange(-280, 280, 20))
-    print(food.pos())
-    return food
-
-# Initialize the score display turtle
-def init_score_turtle(tur: Turtle, score: int) -> None:
-    tur.clear()
-    tur.hideturtle()
-    tur.color("white")
-    tur.pu()
-    tur.goto(-380, -280)
-    tur.pd()
-    tur.write(f"Score: {score}", align="left", font=("Courier", 24, "normal"))
-
-# Update the score on the screen
-def update_score(tur: Turtle, score: int) -> None:
-    tur.clear()
-    tur.write(f"Score: {score}", align="left", font=("Courier", 24, "normal"))
-
-# Display the game over screen
-def game_over(tur: Turtle, score: int) -> None:
-    tur.clear()
-    tur.goto(0, 60)
-    tur.write(f"Game Over", True, align="center", font=("Courier", 24, "normal"))
-    tur.goto(0, 20)
-    tur.write(f"Final score: {score}", True, align="center", font=("Courier", 24, "normal"))
-    tur.goto(0, -100)
-    tur.write(f"Click to play again", True, align="center", font=("Courier", 24, "normal"))
+class Food(Turtle):
+    def __init__(self) -> None:
+        super().__init__()
+        self.pen(pendown=False)
+        self.color("red")
+        self.shape("circle")
+        self.refresh_location()
+    
+    def refresh_location(self) -> None:
+        spawn_x = r.randrange(-FOOD_SPAWN_X_RANGE, FOOD_SPAWN_X_RANGE, 20)
+        spawn_y = r.randrange(-FOOD_SPAWN_Y_RANGE, FOOD_SPAWN_Y_RANGE, 20)
+        self.teleport(spawn_x, spawn_y)
