@@ -19,7 +19,7 @@ class SnakeGame:
             self.snake_obj.update_snake_and_move_forward()
 
             self.collisions_detected["food"] = self.snake_obj.check_collision_with_food(self.food)
-            self.collisions_detected["self"] = self.snake_obj.check_collision_with_self()
+            self.collisions_detected["body"] = self.snake_obj.check_collision_with_body()
             self.collisions_detected["boundary"] = self.snake_obj.check_collision_with_boundaries()
 
             self.resolve_collisions()
@@ -32,13 +32,13 @@ class SnakeGame:
             self.ui.update_score(1)
             self.collisions_detected["food"] = False
         
-        elif self.collisions_detected["self"] or self.collisions_detected["bounadry"]:
+        elif self.collisions_detected["body"] or self.collisions_detected["bounadry"]:
             self.ui.game_over(self.reset_game)
 
     # Resets the game by resetting the snake, collisions, score, and input listening
     def reset_game(self, x: int = None, y: int = None) -> None:
         self.snake_obj.reset_snake()
-        self.collisions_detected = {"food": False, "self": False, "boundary": False}
+        self.collisions_detected = {"food": False, "body": False, "boundary": False}
 
         self.ui.reset_score()
         self.ui.begin_listening(self.snake_obj)

@@ -53,7 +53,7 @@ class Snake:
         return False
 
     # Check for collision with the snake's own body
-    def check_collision_with_self(self) -> bool:
+    def check_collision_with_body(self) -> bool:
         for p in range(1, len(self.snake_body)):
              if self.snake_head.distance(self.snake_body[p]) <= COLLISION_THRESHOLD:
                 return True
