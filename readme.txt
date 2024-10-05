@@ -13,4 +13,3 @@ v 0.02 -
 v 1 (lol) -
 - Game now properly restarts
 - Snake detects collision with body
-- Uhhh...
