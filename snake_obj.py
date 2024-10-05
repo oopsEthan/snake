@@ -1,10 +1,7 @@
 from turtle import *
-import random as r
 
-# Constants for snake movement speed and food spawn range
+# Constants for snake movement speed
 SNAKE_MOVEMENT_SPEED = 20
-FOOD_SPAWN_X_RANGE = 380
-FOOD_SPAWN_Y_RANGE = 280
 
 # Class representing the snake in the game
 class Snake:
@@ -38,7 +35,7 @@ class Snake:
             self.snake_body[p].goto(new_pos)
 
     # Check if the snake's head has collided with the food
-    def check_collision_with_food(self, food: 'Food') -> bool:
+    def check_collision_with_food(self, food) -> bool:
         head_pos = self.snake_body[0].pos()
         food_pos = food.pos()
 
@@ -93,19 +90,3 @@ class Snake:
     # Print debug information when needed, called by pressing "g"
     def debug_print(self) -> None:
         pass
-
-# Class representing the food in the game
-class Food(Turtle):
-    # Initialize the food and place it at a random location
-    def __init__(self) -> None:
-        super().__init__()
-        self.pen(pendown=False)
-        self.color("red")
-        self.shape("circle")
-        self.refresh_location()
-    
-    # Move the food to a new random location
-    def refresh_location(self) -> None:
-        spawn_x = r.randrange(-FOOD_SPAWN_X_RANGE, FOOD_SPAWN_X_RANGE, 20)
-        spawn_y = r.randrange(-FOOD_SPAWN_Y_RANGE, FOOD_SPAWN_Y_RANGE, 20)
-        self.teleport(spawn_x, spawn_y)
