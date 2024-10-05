@@ -29,6 +29,6 @@ class UI(Turtle):
         self.teleport(0, 60)
         self.write(f"Game Over", True, align="center", font=("Courier", 24, "normal"))
         self.teleport(0, 20)
-        self.write(f"Final score: {score}", True, align="center", font=("Courier", 24, "normal"))
+        self.write(f"Final score: {self.score}", True, align="center", font=("Courier", 24, "normal"))
         self.teleport(0, -100)
         self.write(f"Click to play again", True, align="center", font=("Courier", 24, "normal"))
