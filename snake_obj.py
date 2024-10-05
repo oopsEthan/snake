@@ -2,12 +2,16 @@ from turtle import *
 
 # Constants for snake movement speed
 SNAKE_MOVEMENT_SPEED = 20
+SCREEN_BORDER_X = 400
+SCREEN_BORDER_Y = 300
+COLLISION_THRESHOLD = 10
 
 # Class representing the snake in the game
 class Snake:
     # Initialize the snake with an empty list for its body segments
     def __init__(self) -> None:
-        self.snake_body: list[Turtle] = []
+        self.snake_body = []
+        self.snake_head = None
 
     # Grow the snake by adding 'amount' of new segments
     def grow(self, amount: int) -> None:
@@ -19,6 +23,11 @@ class Snake:
             snake_piece.pu()
             snake_piece.shape("square")
             self.snake_body.append(snake_piece)
+
+            # Designate first piece as "snake_head"
+            if len(self.snake_body):
+                self.snake_head = self.snake_body[0]
+
             pieces_grown += 1
 
     # Move the snake forward and update the positions of the body segments
@@ -36,36 +45,26 @@ class Snake:
 
     # Check if the snake's head has collided with the food
     def check_collision_with_food(self, food) -> bool:
-        head_pos = self.snake_body[0].pos()
-        food_pos = food.pos()
-
-        # Calculate the distance between the snake's head and the food
-        distance = ((head_pos[0] - food_pos[0]) ** 2 + (head_pos[1] - food_pos[1]) ** 2) ** 0.5
-
-        # If within a certain range, consider it a collision
-        if distance <= 10:
+        if self.snake_head.distance(food) <= COLLISION_THRESHOLD:
             food.refresh_location()
             self.grow(1)
             return True
         
         return False
 
-    # Check if the snake's head has collided with the boundaries or its body
+    # Check for collision with the snake's own body
     def check_collision_with_self(self) -> bool:
-        # Check for boundary collision
-        if (self.snake_body[0].xcor() > 400 or self.snake_body[0].xcor() < -400 or 
-            self.snake_body[0].ycor() > 300 or self.snake_body[0].ycor() < -300):
-            return True
-
-        # Check for collision with the snake's own body
         for p in range(1, len(self.snake_body)):
-            head_pos = self.snake_body[0].pos()
-            body_pos = self.snake_body[p].pos()
-            
-            distance = ((head_pos[0] - body_pos[0]) ** 2 + (head_pos[1] - body_pos[1]) ** 2) ** 0.5
-            
-            if distance < 5:
+             if self.snake_head.distance(self.snake_body[p]) <= COLLISION_THRESHOLD:
                 return True
+        
+        return False
+
+    # Check for boundary collision
+    def check_collision_with_boundaries(self) -> bool:
+        if (self.snake_head.xcor() > SCREEN_BORDER_X or self.snake_head.xcor() < -SCREEN_BORDER_X or 
+            self.snake_head.ycor() > SCREEN_BORDER_Y or self.snake_head.ycor() < -SCREEN_BORDER_Y):
+            return True
         
         return False
 
@@ -74,6 +73,7 @@ class Snake:
         # Hide all segments and clear the snake body
         for snake_piece in self.snake_body:
             snake_piece.hideturtle()
+        self.snake_head = None
         self.snake_body.clear()
         
         # Regrow the snake with 3 segments
