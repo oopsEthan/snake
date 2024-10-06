@@ -1,7 +1,6 @@
-from turtle import *
 from snake_obj import Snake
 from food_obj import Food
-from ui import UI
+from ui_handler import UI
 
 # Class that manages the Snake game, including the snake, food, UI, and game state
 class SnakeGame:
@@ -15,7 +14,7 @@ class SnakeGame:
 
     # The main game loop: moves the snake, checks for collisions, and handles game progression
     def game_loop(self) -> None:
-        if not self.collisions_detected["self"]:
+        if not self.collisions_detected["body"] and not self.collisions_detected["boundary"]:
             self.snake_obj.update_snake_and_move_forward()
 
             self.collisions_detected["food"] = self.snake_obj.check_collision_with_food(self.food)
@@ -32,12 +31,13 @@ class SnakeGame:
             self.ui.update_score(1)
             self.collisions_detected["food"] = False
         
-        elif self.collisions_detected["body"] or self.collisions_detected["bounadry"]:
+        elif self.collisions_detected["body"] or self.collisions_detected["boundary"]:
             self.ui.game_over(self.reset_game)
 
     # Resets the game by resetting the snake, collisions, score, and input listening
     def reset_game(self, x: int = None, y: int = None) -> None:
         self.snake_obj.reset_snake()
+        self.food.refresh_location()
         self.collisions_detected = {"food": False, "body": False, "boundary": False}
 
         self.ui.reset_score()

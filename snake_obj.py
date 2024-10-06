@@ -17,11 +17,9 @@ class Snake:
     def grow(self, amount: int) -> None:
         pieces_grown = 0
         while pieces_grown < amount:
-            snake_piece = Turtle()
+            snake_piece = Turtle("square")
             snake_piece.color("white")
-            snake_piece.speed(0)
             snake_piece.pu()
-            snake_piece.shape("square")
             self.snake_body.append(snake_piece)
 
             # Designate first piece as "snake_head"
@@ -35,8 +33,8 @@ class Snake:
         if len(self.snake_body) <= 1:
             return
 
-        prev_pos = self.snake_body[0].pos()
-        self.snake_body[0].fd(SNAKE_MOVEMENT_SPEED)
+        prev_pos = self.snake_head.pos()
+        self.snake_head.fd(SNAKE_MOVEMENT_SPEED)
 
         for p in range(1, len(self.snake_body)):
             new_pos = prev_pos
@@ -81,12 +79,8 @@ class Snake:
 
     # Turn the snake left by 90 degrees
     def turn_left(self) -> None:
-        self.snake_body[0].lt(90)
+        self.snake_head.lt(90)
 
     # Turn the snake right by 90 degrees
     def turn_right(self) -> None:
-        self.snake_body[0].rt(90)
-
-    # Print debug information when needed, called by pressing "g"
-    def debug_print(self) -> None:
-        pass
+        self.snake_head.rt(90)
